@@ -1212,6 +1212,19 @@ const DB = {
 };
 
 // ── Init Default State ──
+async function getBets() {
+  const { data, error } = await supabase
+    .from('bets')
+    .select('*');
+
+  if (error) {
+    console.error(error);
+    return [];
+  }
+
+  return data;
+}
+  
 function initDB() {
   if (!DB.get('config')) {
     DB.set('config', {
@@ -1423,8 +1436,8 @@ function filterBets(cat) {
 }
 
 // ── Render Bets ──
-function renderBets() {
-  const bets = DB.get('bets');
+async function renderBets() {
+  const bets = await getBets();
   const wagers = DB.get('wagers');
   const filtered = currentFilter === 'all' ? bets : bets.filter(b => b.category === currentFilter);
 
